@@ -60,7 +60,9 @@
 
     traverse(rootNode, 0);
 
-    const bottlenecks = nodes.filter(n => n.isSeqScan || (maxCost > 0 && (n.cost / maxCost) > 0.4));
+    const bottlenecks = nodes
+      .filter(n => n.isSeqScan || (n.depth > 0 && maxCost > 0 && (n.cost / maxCost) > 0.4))
+      .sort((a, b) => (b.isSeqScan ? 1 : 0) - (a.isSeqScan ? 1 : 0) || b.cost - a.cost);
 
     return {
       totalCost: maxCost,
