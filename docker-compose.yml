@@ -1,0 +1,7 @@
+services:
+  sqlforge:
+    build: .
+    container_name: sql-query-formatter-optimizer
+    ports:
+      - "8085:80"
+    restart: unless-stopped

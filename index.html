@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQLForge Pro | Offline SQL Formatter, Dialect Translator & EXPLAIN Advisor</title>
+  <meta name="description" content="Offline SQL query formatter, linter, dialect translator for PostgreSQL, MySQL, SQLite, and query performance execution plan advisor.">
+  <meta property="og:title" content="SQLForge Pro - SQL Formatter, Translator & Optimizer">
+  <meta property="og:description" content="Format, lint, translate dialects, and analyze SQL execution costs in real-time with zero dependencies.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand-wrapper">
+      <div class="brand-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">
+          SQLForge Pro
+          <span class="brand-tag">v1.0 Commercial</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <button id="btn-copy" class="btn btn-primary" title="Copy formatted SQL">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        Copy Formatted SQL
+      </button>
+      <button id="btn-download" class="btn btn-secondary" title="Download .sql file">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Download .sql
+      </button>
+    </div>
+  </header>
+
+  <!-- Query Presets Bar -->
+  <div class="presets-bar">
+    <span class="presets-label">Samples:</span>
+    <button class="preset-chip active" data-sample="analyticsJoin">E-Commerce Multi-Table JOIN</button>
+    <button class="preset-chip" data-sample="messyQuery">Messy Single-Line Query</button>
+    <button class="preset-chip" data-sample="unoptimized">Unoptimized Anti-Pattern</button>
+    <button class="preset-chip" data-sample="ddlSchema">DDL Schema Tables</button>
+  </div>
+
+  <!-- Workspace Split -->
+  <div class="workspace-split">
+    <!-- Left: SQL Input -->
+    <div class="editor-pane">
+      <div class="pane-toolbar">
+        <span class="pane-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          Raw SQL Input
+        </span>
+
+        <div class="toolbar-controls">
+          <select id="select-dialect" class="select-field">
+            <option value="postgres" selected>PostgreSQL</option>
+            <option value="mysql">MySQL</option>
+            <option value="sqlite">SQLite</option>
+          </select>
+
+          <select id="select-indent" class="select-field">
+            <option value="2" selected>2 Spaces</option>
+            <option value="4">4 Spaces</option>
+          </select>
+
+          <select id="select-casing" class="select-field">
+            <option value="upper" selected>UPPERCASE</option>
+            <option value="lower">lowercase</option>
+          </select>
+
+          <button id="btn-format" class="btn btn-secondary">Format</button>
+          <button id="btn-minify" class="btn btn-secondary">Minify</button>
+          <button id="btn-clear" class="btn btn-secondary">Clear</button>
+        </div>
+      </div>
+
+      <textarea id="sql-input" class="code-editor" spellcheck="false" placeholder="Enter raw SQL query here..."></textarea>
+      <div id="error-banner" class="error-banner hidden"></div>
+    </div>
+
+    <!-- Right: Formatted Output -->
+    <div class="output-pane">
+      <div class="pane-toolbar">
+        <span class="pane-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Formatted & Indented Query
+        </span>
+      </div>
+      <pre id="sql-output" class="code-view">-- Formatted SQL will appear here</pre>
+    </div>
+  </div>
+
+  <!-- Bottom: Query Performance & EXPLAIN Advisor -->
+  <div class="advisor-section">
+    <div class="advisor-header">
+      <div class="score-box">
+        <span class="pane-title">Performance Optimization Score:</span>
+        <span id="score-value" class="score-number text-emerald-400">100</span>
+        <span id="score-badge" class="badge badge-good">Optimized</span>
+      </div>
+      <div class="text-xs text-slate-400">Heuristic static query analysis & anti-pattern detection</div>
+    </div>
+
+    <div class="advisor-grid">
+      <!-- Recommendations -->
+      <div>
+        <div style="font-size: 0.8rem; font-weight: 600; color: #cbd5e1; margin-bottom: 8px;">Index & Query Suggestions</div>
+        <div id="suggestions-container">
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+
+      <!-- Execution Plan Tree -->
+      <div>
+        <div style="font-size: 0.8rem; font-weight: 600; color: #cbd5e1; margin-bottom: 8px;">Simulated Execution Plan</div>
+        <div id="plan-tree-container">
+          <!-- Injected via app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Scripts -->
+  <script src="js/sql-formatter.js"></script>
+  <script src="js/dialect-translator.js"></script>
+  <script src="js/explain-advisor.js"></script>
+  <script src="js/samples.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

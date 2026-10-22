@@ -1,0 +1,20 @@
+{
+  "name": "sql-query-formatter-optimizer",
+  "version": "1.0.0",
+  "description": "Offline SQL query formatter, linter, dialect translator (PostgreSQL, MySQL, SQLite), and EXPLAIN query plan optimizer",
+  "main": "server.js",
+  "scripts": {
+    "test": "node test/sql.test.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "sql-formatter",
+    "sql-linter",
+    "sql-dialect-translator",
+    "explain-analyzer",
+    "query-optimizer",
+    "developer-tools"
+  ],
+  "author": "Max",
+  "license": "MIT"
+}
