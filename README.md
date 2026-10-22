@@ -106,7 +106,7 @@ node test/sql.test.js
 
 ---
 
-## 💰 Commercial & Monetization Potential
+## 💰 Monetization & Commercial Potential
 
 | Channel / Model | Description | Revenue Potential |
 | :--- | :--- | :--- |
